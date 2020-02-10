@@ -8,12 +8,12 @@ def swap_line(arr, pos1, pos2): #swap arr_1 with arr_2
 
 def partition(arr, low_val, high_val):
     pivot = int(arr[high_val][2])
-    i = low_val #or low_val - 1
+    i = low_val
     for j in range(low_val, high_val):
         if int(arr[j][2]) <= pivot:
             swap_line(arr, i, j) #i with j
             i += 1
-    swap_line(arr, i, high_val) #or i + 1
+    swap_line(arr, i, high_val)
     return i
 
 def quicksort(arr, low_val, high_val):

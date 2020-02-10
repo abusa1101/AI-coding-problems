@@ -1,37 +1,39 @@
-import sys
+import random
 import numpy as np
 
 ##Prompt/User input
-# cell_num = int(input("Enter number of cells in 1dCA: "))
-# gen_num = int(input("Enter number of generations to compute: "))
+CELL_NUM = int(input("Enter number of cells in 1dCA: "))
+GEN_NUM = int(input("Enter number of generations to compute: "))
 
 ##Initialize cells in generations
-cell_list = [0, 1, 1, 0, 1, 1, 1, 0, 0, 0]
-cell_num = 10
-gen_num = 6
-# cell_list = [0] * cell_num
-# rand_list = np.random.choice([0, 1], size=len(cell_list) - 2, p=[0.5, 0.5]) #NOT HALF :(
-# for i in range(1, len(cell_list) - 1):
-#     cell_list[i] = rand_list[i - 1]
+CELL_LIST = [0] * CELL_NUM
+CELL_NUM_HALF = CELL_NUM / 2
+if CELL_NUM_HALF.is_integer() is False:
+    CELL_NUM_HALF = np.ceil(CELL_NUM_HALF)
+TEMP_LIST = [0] * (CELL_NUM - 2)
+TEMP_LIST[0:int(CELL_NUM_HALF)] = [1] * int(CELL_NUM_HALF)
+random.shuffle(TEMP_LIST)
+for i in range(1, len(CELL_LIST) - 1):
+    CELL_LIST[i] = TEMP_LIST[i - 1]
 
-##Compute generations
-nextgen_cell_list = [0] * cell_num
-print(cell_list)
+##Initialize next gen and print first gen
+NEXTGEN_CELL_LIST = [0] * CELL_NUM
+print(str(CELL_LIST)[1:-1])
 
-for i in range(gen_num):
+# CELL_LIST = LIST[i].replace("0", ".")
+# CELL_LIST = LIST[i].replace("1", "*")
+
+##Compute next generations (n = GEN_NUM)
+for i in range(GEN_NUM):
     if i != 0:
-        print(nextgen_cell_list)
-        cell_list = nextgen_cell_list;
-    for j in range(1, cell_num - 1):
-        # print("main " + str(j) + " " + str(cell_list[j]))
-        # print("1: " + str(cell_list))
-        if (cell_list[j] == 0):
-            # print("pos, val: " + str(j) + " " + str(cell_list[j]))
-            # print("j + 1: " + str(j + 1) + " " + str(cell_list[j + 1]))
-            # print("j - 1: " + str(j - 1) + " " + str(cell_list[j - 1]))
-            if (cell_list[j + 1] == 1) or (cell_list[j - 1] == 1):
-                nextgen_cell_list[j] = 1
+        print(str(NEXTGEN_CELL_LIST)[1:-1])
+        CELL_LIST = NEXTGEN_CELL_LIST
+        NEXTGEN_CELL_LIST = [0] * CELL_NUM
+    for j in range(1, CELL_NUM - 1):
+        if CELL_LIST[j] == 0:
+            if (CELL_LIST[j + 1] == 1) or (CELL_LIST[j - 1] == 1):
+                NEXTGEN_CELL_LIST[j] = 1
+            if (CELL_LIST[j + 1] == 1) and (CELL_LIST[j - 1] == 1):
+                NEXTGEN_CELL_LIST[j] = 0
         else:
-            nextgen_cell_list[j] = 0
-        # print("2: " + str(cell_list))
-        # print("\n")
+            NEXTGEN_CELL_LIST[j] = 0
