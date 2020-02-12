@@ -41,35 +41,41 @@ import numpy as np
 # graph = functions.make_graph(graph_list)
 # print(graph['Ann Arbor'][0][0])
 
-list = functions.read_file("latlon_coords.csv")
+# list = functions.read_file("latlon_coords.csv")
+#
+# origin = 'Ann Arbor'
+# destination = 'Detroit'
+#
+# city = list[0][0]
+# lat = float(list[0][1])
+# lon = float(list[0][2])
+#
+# for i in range(len(list)):
+#     if list[i][0] == origin:
+#         lat_1 = float(list[i][1])
+#         lon_1 = float(list[i][2])
+#     if list[i][0] == destination:
+#         lat_2 = float(list[i][1])
+#         lon_2 = float(list[i][2])
+# print(lat_1)
+# print(lat_2)
+# print(lon_1)
+# print(lon_2)
+# # if not lat_1 or not lat_2 or not lon_1 or not lon_2:
+# #     return None
+#
+# R = 3959            #miles
+# x_1 = np.cos(lat_1) * np.cos(lon_1) * R
+# y_1 = np.cos(lat_1) * np.sin(lon_1) * R
+# # z_1 = np.sin(lat_1) * R #z is 'up'
+# x_2 = np.cos(lat_2) * np.cos(lon_2) * R
+# y_2 = np.cos(lat_2) * np.sin(lon_2) * R
+#
+# dist = ((x_2 - x_1)**2 + (y_2 - y_1)**2)**(0.5)
+# print(dist)
 
-origin = 'Ann Arbor'
-destination = 'Detroit'
+s = 'anvi'
+list_s = ['oof', 'abc', 'anvi', 'loofah']
 
-city = list[0][0]
-lat = float(list[0][1])
-lon = float(list[0][2])
-
-for i in range(len(list)):
-    if list[i][0] == origin:
-        lat_1 = float(list[i][1])
-        lon_1 = float(list[i][2])
-    if list[i][0] == destination:
-        lat_2 = float(list[i][1])
-        lon_2 = float(list[i][2])
-print(lat_1)
-print(lat_2)
-print(lon_1)
-print(lon_2)
-# if not lat_1 or not lat_2 or not lon_1 or not lon_2:
-#     return None
-
-R = 3959            #miles
-x_1 = np.cos(lat_1) * np.cos(lon_1) * R
-y_1 = np.cos(lat_1) * np.sin(lon_1) * R
-# z_1 = np.sin(lat_1) * R #z is 'up'
-x_2 = np.cos(lat_2) * np.cos(lon_2) * R
-y_2 = np.cos(lat_2) * np.sin(lon_2) * R
-
-dist = ((x_2 - x_1)**2 + (y_2 - y_1)**2)**(0.5)
-print(dist)
+idx = list_s.index(s)
+print(idx)

@@ -1,0 +1,11 @@
+defaultdict(<class 'list'>,
+{'Ann Arbor': [('Brighton', 19.2), ('Plymouth', 17.2), ('Romulus', 23.1)],
+'Brighton': [('Ann Arbor', 19.2), ('Farmington Hills', 21.4), ('Pontiac', 34.1)],
+'Plymouth': [('Ann Arbor', 17.2), ('Detroit', 27.9), ('Farmington Hills', 14.0), ('Romulus', 23.1)],
+'Romulus': [('Ann Arbor', 23.1), ('Plymouth', 23.1), ('Detroit', 31.0)],
+'Farmington Hills': [('Brighton', 21.4), ('Detroit', 28.3), ('Pontiac', 15.5), ('Royal Oak', 16.9), ('Plymouth', 14.0)],
+'Pontiac': [('Brighton', 34.1), ('Farmington Hills', 15.5), ('Royal Oak', 13.3), ('Sterling Heights', 17.2), ('Romeo', 27.8)],
+'Detroit': [('Farmington Hills', 28.3), ('Plymouth', 27.9), ('Romulus', 31.0)], 
+'Royal Oak': [('Farmington Hills', 16.9), ('Pontiac', 13.3)],
+'Sterling Heights': [('Pontiac', 17.2), ('Romeo', 16.5)],
+'Romeo': [('Pontiac', 27.8), ('Sterling Heights', 16.5)]})
