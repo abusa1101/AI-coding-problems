@@ -1,21 +1,28 @@
 #!/usr/bin/python3
-import other_funcs as f
-import search_funcs as sf
+import sys
+import other_funcs as func
+import csp_funcs as csp
+import bts_funcs as bts
 
-# board = '000000002100360540000708900040020100060901080002080030004105000058034006200000000'
-# board1 = '900760340428500006070084590043206009600053024290400670009047205762305000004020937'
+#Check validity of input data
 
-board = f.read_file()
-game = list(board)
+#Try constraint satisfaction method first (using AC-3)
+VARIABLES, VALUES, PEERS, CONSTRAINTS = func.init_game()
+csp.AC3(CONSTRAINTS, VALUES, PEERS)
+IS_SOLVED_AC3 = func.solved(VALUES)
 
-variables = f.set_variables()
-values = f.getDict(variables, board)
-# domain = f.set_domain(game, variables)
-peers, constraints = f.set_constraints(variables)
+#Write solution (completely or partially solved- depends on Sudoku difficulty) to output csv file
+func.write_file(VALUES, 0)
 
-solved = sf.AC3(constraints, values, peers)
-print(f.solved(values))
-f.write_file(values)
+#If AC-3 didn't completely solve the sudoku problem, implement backtracking search
+if not IS_SOLVED_AC3:
+    GAME = bts.init_bts()
+    IS_SOLVED_BTS = bts.backtracking_search(GAME)
 
-
-# print(values)
+#Write completely solved solution or failure to output csv file
+if not IS_SOLVED_BTS:
+    func.write_file(GAME, 1)
+    sys.stderr.write("Failed to solve Sudoku :(\n")
+    sys.exit()
+else:
+    func.write_file(GAME, 2)
