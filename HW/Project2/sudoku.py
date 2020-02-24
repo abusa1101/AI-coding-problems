@@ -6,7 +6,7 @@ import bts_funcs as bts
 
 #Check validity of input data
 
-#Try constraint satisfaction method first (using AC-3)
+#Pre-processing with AC-3 first, before trying BTS
 VARIABLES, VALUES, PEERS, CONSTRAINTS = func.init_game()
 csp.AC3(CONSTRAINTS, VALUES, PEERS)
 IS_SOLVED_AC3 = func.solved(VALUES)
