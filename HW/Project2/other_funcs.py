@@ -45,17 +45,16 @@ def set_constraints(variables):
             constraints.add((var, neighbor))
     return neighbors, constraints
 
-
-def set_domain(variables, grid):
+def set_domain(variables, board):
     i = 0
-    values = {}
-    for cell in variables:
-        if grid[i] != '0':
-            values[cell] = grid[i]
+    domain = {}
+    for var in variables:
+        if board[i] == '0':
+            values[var] = X_KEYS
         else:
-            values[cell] = X_KEYS
+            values[var] = board[i]
         i += 1
-    return values
+    return domain
 
 def init_game():
     board = read_file()
