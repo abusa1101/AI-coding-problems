@@ -84,7 +84,7 @@ def max_value(board, depth):
     for i in valid_action(board): #action here is the index of the empty cell
         board[i] = O_CHOICE #set blank cell to player choice
         #second argumet used to check # of empty cells left i.e. termination state
-        min_score, min_i = min_value(board, len(valid_action(board)))
+        min_score, _min_i = min_value(board, len(valid_action(board)))
         if min_score > max_score: #reset score and index as needed
             max_score = min_score
             max_i = i
@@ -99,7 +99,7 @@ def min_value(board, depth):
         return score, 0 #return utility if terminating
     for i in valid_action(board): #action here is the index of the empty cell
         board[i] = X_CHOICE #set blank cell to player choice
-        max_score, max_i = max_value(board, len(valid_action(board)))
+        max_score, _max_i = max_value(board, len(valid_action(board)))
         if max_score < min_score: #reset score and index as needed
             min_score = max_score
             min_i = i
@@ -126,16 +126,14 @@ def min_value(board, depth):
 def generate_random(seed):
     random.seed(seed)
     random_idx = []
-    for i in range(0, 15):
+    for _i in range(0, 15):
         idx = math.floor(9 * random.random())
         random_idx.append(idx)
     return random_idx
 
 def move_x(random_idx_x, board):
-    idx_range = range(len(random_idx_x))
-    for i in idx_range:
+    for i, _item in enumerate(random_idx_x):
         if board[random_idx_x[i]] == BLANK_CELL:
-            # board[random_idx_x[i]] = X_CHOICE
             return random_idx_x[i]
     return None
 
@@ -145,16 +143,8 @@ def rand_turn(board):
         return
     random_idx_x = generate_random(int(sys.argv[1]))
     valid_idx = move_x(random_idx_x, board)
-    # print(valid_idx)
-    # make_move(valid_idx, X_CHOICE, board)
     if valid_idx in valid_action(board):
         board[valid_idx] = X_CHOICE
-
-# def make_move(i, player, board):
-#     if i in valid_action(board):
-#         board[i] = player
-#         return True
-#     return False
 
 def declare_winner(board):
     if check_win(board, X_CHOICE):
@@ -173,7 +163,7 @@ def play_game(board):
             rand_turn(board)
             player = O_CHOICE
         else:
-            score, idx = max_value(board, len(valid_action(board)))
+            _score, idx = max_value(board, len(valid_action(board)))
             board[idx] = O_CHOICE
             player = X_CHOICE
         write_file(file, board)

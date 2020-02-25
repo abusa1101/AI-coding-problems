@@ -1,71 +1,78 @@
 #!/usr/bin/python3
 import csv
 
-y_keys = 'ABCDEFGHI'
-x_keys = '123456789'
+Y_KEYS = 'ABCDEFGHI'
+X_KEYS = '123456789'
 
-def combine(x_values, y_values):
+def set_keys(x_values, y_values):
     return [x + y for x in x_values for y in y_values]
 
 def set_variables():
-    variables = combine(y_keys, x_keys)
+    variables = set_keys(Y_KEYS, X_KEYS)
     return variables
 
-def set_domain(game, variables):
-    domain = {}
-    for i, v in enumerate(variables):
-        if game[i] == '0':
-            domain.update([(v, list(range(1, 10)))])
-        else:
-            domain.update([(v, [int(game[i])])])
-    return domain
+# def set_domain(game, variables):
+#     domain = {}
+#     for i, val in enumerate(variables):
+#         if game[i] == '0':
+#             domain.update([(val, list(range(1, 10)))])
+#         else:
+#             domain.update([(val, [int(game[i])])])
+#     return domain
 
 def set_constraints(variables):
-    squares = combine(y_keys, x_keys)
-    constraint_list = (
-        [combine(y_keys, x) for x in x_keys] + \
-        [combine(y, x_keys) for y in y_keys] + \
-        [combine(y, x) for y in ('ABC', 'DEF', 'GHI') for x in ('123', '456', '789')]
-    )
-    units = dict((s, [u for u in constraint_list if s in u]) \
-             for s in squares)
-    peers = dict((s, set(sum(units[s],[]))-set([s])) \
-             for s in squares)
-    constraints = {(variable, peer) for variable in variables for peer in peers[variable]}
-    # print(constraints)
-    return peers, constraints
+    keys_list_row = [set_keys(Y_KEYS, x) for x in X_KEYS]
+    keys_list_col = [set_keys(y, X_KEYS) for y in Y_KEYS]
+    keys_list_sq = [set_keys(y, x) for y in ('ABC', 'DEF', 'GHI') for x in ('123', '456', '789')]
+
+    units = {}
+    neighbors = {}
+    constraints = set()
+    for var in variables:
+        for unit in keys_list_row:
+            if var in unit:
+                units1 = unit
+        for unit in keys_list_col:
+            if var in unit:
+                units2 = unit
+        for unit in keys_list_sq:
+            if var in unit:
+                units3 = unit
+        units[var] = [units1, units2, units3]
+        neighbor_set = set([item for elem in units[var] for item in elem])
+        neighbors[var] = neighbor_set - set([var])
+        for neighbor in neighbors[var]:
+            constraints.add((var, neighbor))
+    return neighbors, constraints
+
 
 def set_domain(variables, grid):
-		i = 0
-		values = dict()
-		for cell in variables:
-			if grid[i]!='0':
-				values[cell] = grid[i]
-			else:
-				values[cell] = x_keys
-			i = i + 1
-		return values
+    i = 0
+    values = {}
+    for cell in variables:
+        if grid[i] != '0':
+            values[cell] = grid[i]
+        else:
+            values[cell] = X_KEYS
+        i += 1
+    return values
 
 def init_game():
-    # board = '000000002100360540000708900040020100060901080002080030004105000058034006200000000'
-    # board1 = '900760340428500006070084590043206009600053024290400670009047205762305000004020937'
-
     board = read_file()
-    game = list(board)
+    _game = list(board)
 
     variables = set_variables()
-    values = set_domain(variables, board)
-    # domain = f.set_domain(game, variables)
-    peers, constraints = set_constraints(variables)
-    return variables, values, peers, constraints
+    domain = set_domain(variables, board)
+    neighbors, constraints = set_constraints(variables)
+    return variables, domain, neighbors, constraints
 
 def read_file():
     file = csv.reader(open("suinput.csv", 'r'), skipinitialspace='True')
     values = list(file)
     board = ''
-    for val in values:
-        for v in val:
-            board = board + v
+    for value in values:
+        for val in value:
+            board = board + val
     return board
 
 def write_file(values, is_failure):
@@ -91,13 +98,12 @@ def write_file(values, is_failure):
         write_bts(values)
 
 def write_bts(values):
-    with open("suoutput.csv", 'w') as f:
-        file = csv.writer(f, delimiter=',')
+    with open("suoutput.csv", 'w') as file_s:
+        file = csv.writer(file_s, delimiter=',')
         file.writerows(values)
 
 def solved(values):
     for variable in values:
         if len(values[variable]) > 1:
-            # print(values[variable])
             return False
     return True
