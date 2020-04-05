@@ -5,18 +5,12 @@ def prob(Y, e, bn):
     if not parents:
         P = bn[Y][1][('None','None')]
     else: #Parents exist
-        # print(Y)
-        # print(bn[Y])
-        print(parents)
-        print(e)
         p_vals_list = []
         for parent in parents:
             p_vals_list.append(str(e[parent]))
         if len(p_vals_list) != 2:
             p_vals_list.append('None')
         p_vals = tuple(p_vals_list)
-        print(bn[Y][1])
-        print(p_vals)
         P = bn[Y][1][p_vals] #Probability of Parent(Y) values
     return P if e[Y] else (1.0 - P)
 
@@ -24,23 +18,19 @@ def enumerateAll(vars, e, bn):
     if not vars:
         return 1.0
     Y = vars.pop()
-    # print(Y)
-    # print(e)
     if Y in e:
         # print("in")
         query = prob(Y,e,bn) * enumerateAll(vars,e,bn)
         vars.append(Y)
         return query
     else:
-        # print('else')
         query_sum = 0
         e_cpy = cp.deepcopy(e)
-        # print(e_cpy)
-        for boolval in [False, True]:
-            # print(Y)
+        for boolval in ['True', 'False']: #[True, False]
+            # print(type(boolval))
             e_cpy[Y] = boolval
-            print(e_cpy)
             query_sum += prob(Y,e_cpy,bn) * enumerateAll(vars,e_cpy,bn)
+            # print(query_sum)
         vars.append(Y)
         return query_sum
 
@@ -52,9 +42,11 @@ def normalize(Q):
 
 def enumerationAsk(X, e, bn,vars):
     Q = {}
-    for xi in [False,True]: #because boolean values
+    for xi in ['True', 'False']: #because boolean values ['T','F']
+        print(xi)
         e_cpy = cp.deepcopy(e)
         e_cpy[X] = xi
+        # print(e_cpy)
         Q[xi] = enumerateAll(vars, e_cpy, bn)
     return normalize(Q)# Run Program for given input
 
