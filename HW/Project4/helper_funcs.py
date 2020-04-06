@@ -1,5 +1,12 @@
 import csv
-# import inference as inf
+import inference_truth as inf
+
+def give_bool(bval):
+    if bval == 'T':
+        bval = 'True'
+    elif bval == 'F':
+        bval = 'False'
+    return bval
 
 def read_input_file(file_name):
     file = csv.reader(open(file_name, 'r'), skipinitialspace='True')
@@ -7,8 +14,8 @@ def read_input_file(file_name):
     X = input_list[1]
     e = {}
     for evidence in input_list[3]:
-        e[evidence[0]] = evidence[2]
-    return (X,e)
+        e[give_bool(evidence[0])] = give_bool(evidence[2])
+    return (X[0],e)
 
 def read_bn_file(file_name):
     f = open(file_name)
@@ -53,11 +60,11 @@ def read_bn_file(file_name):
         if not p_list[4][i]:
             p_list[4][i] = 'None'
         if p_list[0][i] not in bn.keys():
-            bn[p_list[0][i]] = [[], {(p_list[2][i], p_list[4][i]):p_list[5][i]}]
+            bn[p_list[0][i]] = [[], {(give_bool(p_list[2][i]), give_bool(p_list[4][i])):p_list[5][i]}]
         else:
             rep_var = p_list[0][i] #repeated node
             prev_prob_entry = bn[rep_var][1] #previous probability entry
-            merged_prob_entry = {(p_list[2][i], p_list[4][i]):p_list[5][i]} #new probability entry
+            merged_prob_entry = {(give_bool(p_list[2][i]), give_bool(p_list[4][i])):p_list[5][i]} #new probability entry
             merged_prob_entry.update(prev_prob_entry) #merge previous and new probability entries
             del bn[rep_var] #delete previous prob entry
             bn[rep_var] = [[], merged_prob_entry] #replace with updated merged entry
@@ -86,10 +93,10 @@ def read_bn_file(file_name):
 #                    {(False,None):.01,(True,None):.70}]}
 # vars = ['M','J','A','B','E']
 
-print(X)
-print(e)
-print(vars)
-print(bn)
+# print(X)
+# print(e)
+# print(vars)
+# print(bn)
 
-# print(inf.enumerationAsk(X[0],e,bn,vars))
+print(inf.enumerationAsk(X,e,bn,vars))
 # enumerationAsk(X, e, bn,vars):
