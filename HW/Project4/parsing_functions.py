@@ -1,6 +1,5 @@
 import csv
 
-
 def give_bool(bval):
     if bval == 'T':
         bval = True
