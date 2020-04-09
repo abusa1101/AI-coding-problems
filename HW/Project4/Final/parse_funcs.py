@@ -1,7 +1,7 @@
 import csv
 
-def find(s, ch):
-    return [i for i, ltr in enumerate(s) if ltr == ch]
+def find(line, letter):
+    return [i for i, x in enumerate(line) if x == letter]
 
 def make_bool(line):
     bool_list = []
@@ -31,7 +31,7 @@ def give_pv_idx(lines):
             pv_idx = i #idx where Probabilities start next
     return pv_idx
 
-def read_input_file(file_name): #Parsing input.txt file
+def parse_input_file(file_name): #Parsing input.txt file
     file = csv.reader(open(file_name, 'r'), skipinitialspace='True')
     input_list = list(file)
     x_var = input_list[1]
@@ -40,84 +40,59 @@ def read_input_file(file_name): #Parsing input.txt file
         e_dict[give_bool(evidence[0])] = give_bool(evidence[2])
     return (x_var[0], e_dict)
 
-def read_bn_file(file_name): #Parsing bayes_net.txt to bayes_net dict
-    #OPEN FILE
-    bn_file = open(file_name)
-    lines = bn_file.read().split("\n") # Create a list containing all lines
-    bn_file.close()
-
+def init_bn(lines):
     #CREATE BN DICT OF REQUIRED SIZE- POPULATE NODES, PARENTS
     pv_idx = give_pv_idx(lines)
 
-    # ct_list = []
-    # nodes = ''
-    # for node in lines[1]:
-    #     if node.isalpha():
-    #         nodes = nodes + node
-    #         ct_list.append([node, 0])
-    #
-    # chars = ''
-    # for i in range(3, pv_idx):
-    #     chars = chars + lines[i][3]
-    # for i, item in enumerate(ct_list):
-    #     count = chars.count(item[0])
-    #     ct_list[i][1] = count
-
-    # values = [[],[]]
-    # probval = 1
-    # for i, item in enumerate(ct_list):
-    #     n = ct_list[i][1]
-    #     value_ct =  2**n
-    #     if not n:
-    #         values[0].append(None)
-    #     else:
-    #         values[0].append([['Value']*n]*value_ct)
-    #     values[1].append(probval)
-    # bn = {}
-    # for i, item in enumerate(ct_list):
-    # 	# bn[ct_list[i][0]] = [[], values[0][i],values[1][i]] #[Parents set], [values set], ProbVal
-    #     bn[ct_list[i][0]] = [[], [], []]
-
-    bn = {}
+    bayes_net = {}
     for i, item in enumerate(lines[1]):
         if item.isalpha():
-            bn[item] = [[], [], []]
+            bayes_net[item] = [[], [], []]
 
     for i in range(3, pv_idx):
-        bn[lines[i][3]][0].append(lines[i][0])
+        bayes_net[lines[i][3]][0].append(lines[i][0])
+    return bayes_net, pv_idx
 
+def populate_bn(lines, bayes_net, pv_idx):
     #POPULATE VALUES AND PROBVALS
     vars = []
-    p_list = [[], [], [], [], [], []]
-    ProbVals = []
-    ValueOrder = ''
+    prob_vals = []
     idx_list = []
     for i, item in enumerate(lines):
         if i > pv_idx and item:
             if item[2] not in vars:
                 vars.append(item[2])
-            ProbVals.append(float(give_prob_val(item)))
-            idx = find(item,'=')
+            prob_vals.append(float(give_prob_val(item)))
+            idx = find(item, '=')
             idx_list.append(idx[1:-1])
+    vars.reverse()
 
     for i, item in enumerate(idx_list):
         idx_list[i] = [x + 1 for x in item if item]
 
-    ValuesList = []
+    values_list = []
     word = ''
     for i, item in enumerate(lines[pv_idx + 1:]):
         if item:
-            for j,idx in enumerate(idx_list[i]):
+            for _, idx in enumerate(idx_list[i]):
                 word = word + item[idx]
-            ValuesList.append(item[2] + word)
+            values_list.append(item[2] + word)
             word = ''
 
-    for i, item in enumerate(ValuesList):
+    for i, item in enumerate(values_list):
         if item[1:]:
-            bn[item[0]][1].append(make_bool(item[1:]))
+            bayes_net[item[0]][1].append(make_bool(item[1:]))
         else:
-            bn[item[0]][1].append(None)
-        bn[item[0]][2].append(ProbVals[i])
+            bayes_net[item[0]][1].append(None)
+        bayes_net[item[0]][2].append(prob_vals[i])
+    return bayes_net, vars
 
-    vars.reverse()
-    return vars, bn
+def parse_bn_file(file_name): #Parsing bn.txt to bayes_net dict
+    #OPEN FILE
+    bn_file = open(file_name)
+    lines = bn_file.read().split("\n") # Create a list containing all lines
+    bn_file.close()
+
+    bayes_net, pv_idx = init_bn(lines)
+    bayes_net, vars = populate_bn(lines, bayes_net, pv_idx)
+    return vars, bayes_net
