@@ -98,10 +98,15 @@ def read_bn_file(file_name): #Parsing bayes_net.txt to bayes_net dict
     bayes_net = format_bn_dict(lines, bayes_net, vars, pv_idx)
     return vars, bayes_net
 
-bn_file = open("bn.txt")
+def find(s, ch):
+    return [i for i, ltr in enumerate(s) if ltr == ch]
+
+#OPEN FILE
+bn_file = open("bn2.txt")
 lines = bn_file.read().split("\n") # Create a list containing all lines
 bn_file.close()
 
+#CREATE BN DICT OF REQUIRED SIZE- POPULATE NODES, PARENTS
 pv_idx = give_pv_idx(lines)
 
 ct_list = []
@@ -117,7 +122,7 @@ for i in range(3, pv_idx):
 for i,item in enumerate(ct_list):
     count = chars.count(item[0])
     ct_list[i][1] = count
-print(ct_list)
+# print(ct_list)
 
 values = [[],[]]
 probval = 1
@@ -134,7 +139,40 @@ bn = {}
 for i,item in enumerate(ct_list):
 	bn[ct_list[i][0]] = [[], values[0][i],values[1][i]] #[Parents set], [values set], ProbVal
 
-for i in range(3,pv_idx):
+for i in range(3, pv_idx):
     bn[lines[i][3]][0].append(lines[i][0])
-
 print(bn)
+
+#POPULATE VALUES AND PROBVALS
+vars = []
+p_list = [[], [], [], [], [], []]
+ProbVals = []
+ValueOrder = ''
+idx_list = []
+for i, item in enumerate(lines):
+    if i > pv_idx and item:
+        if item[2] not in vars:
+            vars.append(item[2])
+        ProbVals.append(float(give_prob_val(item)))
+        idx = find(item,'=')
+        idx_list.append(idx[1:-1])
+
+for i,item in enumerate(idx_list):
+    idx_list[i] = [x + 1 for x in item if item]
+print(idx_list)
+
+# for i, item in enumerate(lines):
+#     if i > pv_idx and item:
+#         # print(item)
+#         bn[item[2]][1] =
+        # if item[8].isalpha():
+        #     p_list[2].append(item[8]) #assign Parent1 boolean (T/F)
+        # else:
+        #     p_list[2].append('') #assign null if no Parent1
+        # if len(item) > 10 and item[12].isalpha():
+        #     p_list[4].append(item[12]) #assign Parent2 boolean (T/F)
+        # else:
+        #     p_list[4].append('') #assign null if no Parent2
+
+print(ProbVals)
+vars.reverse()
