@@ -1,5 +1,3 @@
-import csv
-
 def give_bool(bval):
     if bval == 'T':
         bval = True
@@ -100,15 +98,43 @@ def read_bn_file(file_name): #Parsing bayes_net.txt to bayes_net dict
     bayes_net = format_bn_dict(lines, bayes_net, vars, pv_idx)
     return vars, bayes_net
 
-# #PROJECT EXAMPLE
-# X = 'D'
-# e = {'A': True, 'C': False}
-# # vars = ['A', 'C', 'B', 'D']
-# vars = ['D', 'B', 'C', 'A']
-# bayes_net = {'A': [[], {(None,None): 0.4}],
-#       'C': [[], {(None,None): 0.7}],
-#       'B': [['A'], {(True,None): 0.3, (False,None): 0.9}],
-#       'D': [['B', 'C'], {(True,True): 0.1, (True,False): 0.5,
-                         # (False,True): 0.3, (False,False): 0.8}]}
+bn_file = open("bn.txt")
+lines = bn_file.read().split("\n") # Create a list containing all lines
+bn_file.close()
 
-# read_bn_file("bn.txt")
+pv_idx = give_pv_idx(lines)
+
+ct_list = []
+nodes = ''
+for node in lines[1]:
+    if node.isalpha():
+        nodes = nodes + node
+        ct_list.append([node, 0])
+
+chars = ''
+for i in range(3, pv_idx):
+    chars = chars + lines[i][3]
+for i,item in enumerate(ct_list):
+    count = chars.count(item[0])
+    ct_list[i][1] = count
+print(ct_list)
+
+values = [[],[]]
+probval = 1
+for i,item in enumerate(ct_list):
+    n = ct_list[i][1]
+    value_ct =  2**n
+    if not n:
+        values[0].append(None)
+    else:
+        values[0].append([['Value']*n]*value_ct)
+    values[1].append(probval)
+
+bn = {}
+for i,item in enumerate(ct_list):
+	bn[ct_list[i][0]] = [[], values[0][i],values[1][i]] #[Parents set], [values set], ProbVal
+
+for i in range(3,pv_idx):
+    bn[lines[i][3]][0].append(lines[i][0])
+
+print(bn)
