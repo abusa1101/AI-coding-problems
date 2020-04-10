@@ -1,13 +1,5 @@
 import copy as cp
 
-# X = 'D'
-# e = {'A': True, 'C': False}
-# vars = ['D', 'B', 'C', 'A']
-# bn = {'A': [[], [None], [0.4]],
-#       'B': [['A'], [[False], [True]], [0.9, 0.3]],
-#       'C': [[], [None], [0.7]],
-#       'D': [['B', 'C'], [[False, False], [False, True], [True, False], [True, True]],
-#             [0.8, 0.3, 0.5, 0.1]]}
 
 def probability(y_var, e_dict, bayes_net):
     parents = bayes_net[y_var][0]
@@ -43,7 +35,7 @@ def enum_all(vars, e_dict, bayes_net):
         return query_sum
 
 def normalize(q_dist):
-    n_factor = 1/sum(q_dist.values()) #Normalizing factor -> Total sum of X = T,F values in Q
+    n_factor = 1 / sum(q_dist.values()) #Normalizing factor -> Total sum of X = T,F values in Q
     for key in q_dist.keys(): #For each value of X
         q_dist[key] = q_dist[key] * n_factor #Normalize associated probability value
     return q_dist

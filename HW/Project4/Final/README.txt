@@ -17,8 +17,9 @@ Input:  (1) input.txt-          Contains Query RV, Evidence vector.
                the template, to the spaces (because program is parsing Probability values
                character by character).
 
-To run program: Run 'run_inference.py' with python3 as follows,
+To run program: (1) Enter filenames as required (default- 'bn.txt', 'input.txt')
+                (2) Run 'run_inference.py' with python3 as follows,
 
-                python3 run_inference.py
+                    python3 run_inference.py
 
 Output: (1) Q(X) = {True: TrueProbValue, False: FalseProbValue} (for X = Query RV)

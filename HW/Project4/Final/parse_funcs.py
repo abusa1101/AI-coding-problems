@@ -43,7 +43,6 @@ def parse_input_file(file_name): #Parsing input.txt file
 def init_bn(lines):
     #CREATE BN DICT OF REQUIRED SIZE- POPULATE NODES, PARENTS
     pv_idx = give_pv_idx(lines)
-
     bayes_net = {}
     for i, item in enumerate(lines[1]):
         if item.isalpha():
