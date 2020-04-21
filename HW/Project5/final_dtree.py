@@ -5,20 +5,16 @@ from collections import OrderedDict
 # import decisionTree as input
 
 def entropy(pi):
-    # entropy(p) = − SUM (Pi * log(Pi) )
     total = 0
-    # print(pi)
     for p in pi:
-        # if sum(pi) == 0:
-        #     return False
+        if sum(pi) == 0:
+            continue
         p = p / sum(pi)
         if p != 0:
             total += p * log(p, 2)
         else:
             total += 0
     total *= -1
-    # print("total")
-    # print(total)
     return total
 
 def gain(d, a):
@@ -42,23 +38,9 @@ def information(features, target):
     args = []
     gains = []
     for key in features.keys():
-        # print(key)
-        is_full = False
-        for items in features[key]:
-            for item in items:
-                # print(item)
-                if item != 0:
-                    is_full = True
-            if items == [0,0]:
-                is_full = False
-        # print(is_full)
-        if is_full:
-            args.append(key)
-            gains.append(gain(target, features[key]))
-    print(args)
-    print(gains)
+        args.append(key)
+        gains.append(gain(target, features[key]))
     best_attr = args[np.argmax(gains)]
-    print(best_attr)
     return best_attr
 
 def same_class(examples):
@@ -76,8 +58,9 @@ def get_values(idx, attr_key, attributes, examples, target_decision):
     prob_list = []
     target_ct = [0,0]
     for value in attributes[attr_key]:
-        for example in examples:
+        for i, example in enumerate(examples):
             if example[idx] == value:
+                # print(value + ' | ' + example[idx])
                 if example[-1] == target_decision[0]:
                     target_ct[0] += 1
                 elif example[-1] == target_decision[1]:
@@ -86,7 +69,13 @@ def get_values(idx, attr_key, attributes, examples, target_decision):
         target_ct = [0,0]
     return prob_list
 
-def get_prob(attributes, examples):
+def remove_attribute(best_attr, attributes):
+    modified_attr = attributes.copy()
+    if best_attr in modified_attr.keys():
+        del modified_attr[best_attr]
+    return modified_attr
+
+def get_prob(trim_idx, attributes, examples):
     decision = []
     decision_set = ()
     for example in examples:
@@ -98,16 +87,15 @@ def get_prob(attributes, examples):
     target_value = [dec1_ct, dec2_ct]
 
     features = OrderedDict()
-    for idx, attr in enumerate(attributes.keys()):
-        features[attr] = get_values(idx, attr, attributes, examples, target_decision)
-    # print(features)
-    return target_value, features
+    ex_cpy = examples.copy()
 
-def remove_attribute(best_attr, attributes):
-    modified_attr = attributes.copy()
-    if best_attr in modified_attr.keys():
-        del modified_attr[best_attr]
-    return modified_attr
+    if trim_idx:
+        for i, exs in enumerate(ex_cpy):
+            val = exs.pop(trim_idx)
+
+    for idx, attr in enumerate(attributes.keys()):
+        features[attr] = get_values(idx, attr, attributes, ex_cpy, target_decision)
+    return target_value, features
 
 def get_examples(value, best_attr, attributes, examples):
     for i,attr_key in enumerate(attributes.keys()):
@@ -117,31 +105,42 @@ def get_examples(value, best_attr, attributes, examples):
     for example in examples:
         if example[idx] == value:
             value_exs.append(example)
-    # print(value_exs)
-    # print(len(value_exs))
     return value_exs
 
+def plurality_value(examples):
+    if examples:
+        out = []
+        for example in examples:
+            for ex in example:
+                out.append(ex[-1])
+        mode = max(set(out), key=out.count)
+        print(out)
+        print(mode)
+    return mode
 
-def dtlearner(examples, attributes, parent_examples=()):
-    # print(len(parent_examples))
+def dtlearner(trim_idx, examples, attributes, parent_examples):
+    print("enter")
+    # print(parent_examples)
     if len(examples) == 0:
+        plurality_value(parent_examples)
         return 'pv'
     if same_class(examples) != False:
         return same_class(examples)
     if len(attributes) == 0:
+        plurality_value(examples)
         return 'pv'
-
-    target_value, features = get_prob(attributes, examples)
-    print(features)
+    parent_examples = examples
+    target_value, features = get_prob(trim_idx, attributes, examples)
     best_attr = information(features, target_value)
     tree = {best_attr: {}}
-    # print(tree)
+    attr_list = list(attributes.keys())
+    trim_idx = attr_list.index(best_attr)
+    print(best_attr)
     for value in attributes[best_attr]:
         exs = get_examples(value, best_attr, attributes, examples)
-        subtree = dtlearner(exs, remove_attribute(best_attr, attributes), examples)
-        # print(subtree)
+        subtree = dtlearner(trim_idx, exs, remove_attribute(best_attr, attributes), examples)
         tree[best_attr][value] = subtree
-    print(tree)
+        # print(tree)
     return tree
 
 examples = [['Yes', 'No', 'No', 'Yes', 'Some', '$$$', 'No', 'Yes', 'French', '0-10', 'Yes'],
@@ -168,5 +167,5 @@ attributes = {  "alt": ['Yes','No'], # Yes, No
                 "type": ['French','Thai','Burger','Italian'], #Fren, Thai, Burg, Ital
                 "est": ['0-10','10-30','30-60','>60']} #0-10, 10-30, 30-60, >60
 
-tree = dtlearner(examples, attributes)
+tree = dtlearner(False, examples, attributes, [])
 print(tree)
