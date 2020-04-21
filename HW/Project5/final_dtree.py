@@ -1,34 +1,64 @@
 from math import log
 import numpy as np
 import copy
+from collections import OrderedDict
 # import decisionTree as input
 
 def entropy(pi):
     # entropy(p) = − SUM (Pi * log(Pi) )
     total = 0
+    # print(pi)
     for p in pi:
+        # if sum(pi) == 0:
+        #     return False
         p = p / sum(pi)
         if p != 0:
             total += p * log(p, 2)
         else:
             total += 0
     total *= -1
+    # print("total")
+    # print(total)
     return total
 
 def gain(d, a):
     total = 0
+    # print(d)
+    # print(a)
+    # print('entr(v):')
     for v in a:
-        total += sum(v) / sum(d) * entropy(v)
+        B = entropy(v)
+        # if not B:
+        #     return 0
+        total += (sum(v) / sum(d)) * B
+    # print('entr(d):')
     gain = entropy(d) - total
+    # print(entropy(d))
+    # print(total)
+    # print(gain)
     return gain
 
 def information(features, target):
     args = []
     gains = []
     for key in features.keys():
-        args.append(key)
-        gains.append(gain(target, features[key]))
+        # print(key)
+        is_full = False
+        for items in features[key]:
+            for item in items:
+                # print(item)
+                if item != 0:
+                    is_full = True
+            if items == [0,0]:
+                is_full = False
+        # print(is_full)
+        if is_full:
+            args.append(key)
+            gains.append(gain(target, features[key]))
+    print(args)
+    print(gains)
     best_attr = args[np.argmax(gains)]
+    print(best_attr)
     return best_attr
 
 def same_class(examples):
@@ -67,18 +97,33 @@ def get_prob(attributes, examples):
     target_decision = [decision_set[0], decision_set[1]]
     target_value = [dec1_ct, dec2_ct]
 
-    features = {}
+    features = OrderedDict()
     for idx, attr in enumerate(attributes.keys()):
         features[attr] = get_values(idx, attr, attributes, examples, target_decision)
     # print(features)
     return target_value, features
 
-def remove_attribute(A, attributes):
+def remove_attribute(best_attr, attributes):
     modified_attr = attributes.copy()
-
+    if best_attr in modified_attr.keys():
+        del modified_attr[best_attr]
     return modified_attr
 
+def get_examples(value, best_attr, attributes, examples):
+    for i,attr_key in enumerate(attributes.keys()):
+        if attr_key == best_attr:
+            idx = i
+    value_exs = []
+    for example in examples:
+        if example[idx] == value:
+            value_exs.append(example)
+    # print(value_exs)
+    # print(len(value_exs))
+    return value_exs
+
+
 def dtlearner(examples, attributes, parent_examples=()):
+    # print(len(parent_examples))
     if len(examples) == 0:
         return 'pv'
     if same_class(examples) != False:
@@ -87,13 +132,14 @@ def dtlearner(examples, attributes, parent_examples=()):
         return 'pv'
 
     target_value, features = get_prob(attributes, examples)
+    print(features)
     best_attr = information(features, target_value)
     tree = {best_attr: {}}
-    print(tree)
-    # print(zed_leppelin)
+    # print(tree)
     for value in attributes[best_attr]:
-        subtree = dtlearner(exs, remove_attribute(A, attributes), examples)
-        subtree = 'leaf'
+        exs = get_examples(value, best_attr, attributes, examples)
+        subtree = dtlearner(exs, remove_attribute(best_attr, attributes), examples)
+        # print(subtree)
         tree[best_attr][value] = subtree
     print(tree)
     return tree
@@ -122,6 +168,5 @@ attributes = {  "alt": ['Yes','No'], # Yes, No
                 "type": ['French','Thai','Burger','Italian'], #Fren, Thai, Burg, Ital
                 "est": ['0-10','10-30','30-60','>60']} #0-10, 10-30, 30-60, >60
 
-target = ['Yes', 'No']
-
-dtlearner(examples, attributes, parent_examples=())
+tree = dtlearner(examples, attributes)
+print(tree)
