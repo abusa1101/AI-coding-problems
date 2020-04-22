@@ -1,0 +1,16 @@
+EECS 592 PROJECT 5 (ANVIKSHA R. BUSA)
+
+
+Q3 (MDP):   To run -> run 'python3 value_iteration.py' in terminal
+            # Input-    mdpinput.txt
+            # Program-  value_iteration.py
+            # Output-   policy.txt
+
+Q4 (DTREE): To run -> run 'python3 run_dtree.py' in terminal
+            # Input-            examples.txt
+            # Program-          run_dtree.py
+            # Function files-   parse_dtree.py,
+                                dtree_funcs.py
+            # Output-           dtree.txt
+
+*All files meet 80%+ Pylint requirement
