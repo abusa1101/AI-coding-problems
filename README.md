@@ -1,9 +1,3 @@
-# EECS592: Foundations of AI
+# AI-coding-problems
 
-HW1:
-
-1. Cell.py 
-
-2. Quicksort.py- Using Lomuto Partioning Scheme
-
-3. Mygraph.py- 
+My solutions to a series of fun AI coding problems in Python
