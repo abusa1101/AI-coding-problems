@@ -1,0 +1,4 @@
+"% Format: decision? value, next node (leaf value or next decision?)"
+% Use question mark and comma markers as indicated below.
+ 
+Pat,"{'None': 'No', 'Some': 'Yes', 'Full': {'Hun': {'Yes': {'Type': {'French': 'No', 'Thai': {'Fri': {'Yes': 'Yes', 'No': 'No'}}, 'Burger': 'Yes', 'Italian': 'No'}}, 'No': 'No'}}}"

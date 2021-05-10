@@ -1,0 +1,25 @@
+% States (comma-separated list)
+S0, S1, S2
+% Actions (commma-separated list)
+a0, a1
+% Transition model: One transition matrix per action.
+% State, action orderings will match the above lists.
+% Action 1:
+0.8, 0.2, 0.0
+0.4, 0.5, 0.1
+0.6, 0.0, 0.4
+% Action 2:
+0.7, 0.3, 0.0
+0.0, 0.0, 1.0
+0.0, 0.0, 1.0
+% Rewards (State, Action, R(s,a))
+S0, a0, 2
+S0, a1, 3
+S1, a0, 0
+S1, a1, 1
+S2, a0, 0
+S2, a1, 1
+% Discount factor (gamma)
+0.8
+% Epsilon (tolerance)
+0.001

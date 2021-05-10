@@ -1,0 +1,5 @@
+% Query random variable (print the probability X=T)
+D
+% Evidence vector (insert blank linke when no evidence is given)
+A=T, C=F
+% End of input
